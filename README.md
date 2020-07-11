@@ -2,8 +2,8 @@
 ## Hardware setup
 Use the following pins:
 - GPIO17 for red
-- GPIO22 for green
-- GPIO24 for blue
+- GPIO27 for green
+- GPIO22 for blue
 
 Note: I used an external power supply for the LEDs 12v and ground connections.
 
