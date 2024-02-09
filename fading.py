@@ -1,11 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
 #
 # -----------------------------------------------------
 # File        fading.py
 # Authors     David Ordnung
-#             (Modified for python3 by the DoxBox Team)
+#             (Modified in 2024 for python3 by the DoxBox Team)
 # License     GPLv3
 # Web         http://dordnung.de/raspberrypi-ledstrip/
 # -----------------------------------------------------
@@ -25,13 +24,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>
 #
-
 # This script needs running pigpio (http://abyz.co.uk/rpi/pigpio/)
 
 import pigpio
 import time
 from _thread import start_new_thread
-
 
 def updateColor(color, step):
     color += step
@@ -40,19 +37,15 @@ def updateColor(color, step):
         return 255
     if color < 0:
         return 0
-
     return color
-
 
 def setLights(pin, brightness):
     realBrightness = int(int(brightness) * (float(bright) / 255.0))
     pi.set_PWM_dutycycle(pin, realBrightness)
 
-
 def getCh():
     ch = input("Input: ")
     return ch
-
 
 def checkKey():
     global bright
@@ -67,7 +60,6 @@ def checkKey():
             brightChanged = True
             time.sleep(0.01)
             brightChanged = False
-
             bright = bright + BRIGHTNESS_STEPS
             print("Current brightness: %d" % bright)
             setLights(RED_PIN, bright)
@@ -78,7 +70,6 @@ def checkKey():
             brightChanged = True
             time.sleep(0.01)
             brightChanged = False
-
             bright = bright - BRIGHTNESS_STEPS
             print("Current brightness: %d" % bright)
             setLights(RED_PIN, bright)
@@ -88,9 +79,7 @@ def checkKey():
         if c == 'p' and state:
             state = False
             print("Pausing...")
-
             time.sleep(0.1)
-
             setLights(RED_PIN, 0)
             setLights(GREEN_PIN, 0)
             setLights(BLUE_PIN, 0)
@@ -102,7 +91,6 @@ def checkKey():
         if c == 'c' and not abort:
             abort = True
             break
-
 
 def fadeLed():
     global r
@@ -134,7 +122,6 @@ def fadeLed():
             elif r == 255 and g == 0 and b > 0:
                 b = updateColor(b, -STEPS)
                 setLights(BLUE_PIN, b)
-
 
 if __name__ == "__main__":
     ###### CONFIGURE THIS ###########
