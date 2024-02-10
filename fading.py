@@ -49,10 +49,8 @@ def getCh():
     return ch
 
 def checkKey():
-    global bright
-    global brightChanged
-    global state
-    global abort
+    global bright, brightChanged
+    global state, abort
 
     while True:
         c = getCh()
@@ -85,9 +83,9 @@ def checkKey():
             abort = True
             break
 
-def fadeLed(r, g, b):
-    global state
-    global abort
+def fadeLed():
+    global r, g, b
+    global state, abort
     
     while not abort:
         if state and not brightChanged:
@@ -136,7 +134,7 @@ if __name__ == "__main__":
     setLights(GREEN_PIN, g)
     setLights(BLUE_PIN, b)
 
-    fadeLed(r, g, b)
+    fadeLed()
 
     print("Aborting...")
     bright = 0
