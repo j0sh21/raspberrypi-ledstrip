@@ -33,7 +33,7 @@ from _thread import start_new_thread
 
 def updateColor(color, step):
     color += step
-    
+
     if color > 255:
         return 255
     if color < 0:
@@ -86,6 +86,9 @@ def checkKey():
             break
 
 def fadeLed(r, g, b):
+    global state
+    global abort
+    
     while not abort:
         if state and not brightChanged:
             if r == 255 and b == 0 and g < 255:
