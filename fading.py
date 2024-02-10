@@ -30,9 +30,10 @@ import pigpio
 import time
 from _thread import start_new_thread
 
+
 def updateColor(color, step):
     color += step
-
+    
     if color > 255:
         return 255
     if color < 0:
@@ -57,32 +58,24 @@ def checkKey():
         c = getCh()
 
         if c == '+' and bright < 255 and not brightChanged:
-            brightChanged = True
-            time.sleep(0.01)
-            brightChanged = False
             bright = bright + BRIGHTNESS_STEPS
-            print("Current brightness: %d" % bright)
-            setLights(RED_PIN, bright)
-            setLights(GREEN_PIN, bright)
-            setLights(BLUE_PIN, bright)
 
         if c == '-' and bright > 0 and not brightChanged:
-            brightChanged = True
-            time.sleep(0.01)
-            brightChanged = False
             bright = bright - BRIGHTNESS_STEPS
-            print("Current brightness: %d" % bright)
-            setLights(RED_PIN, bright)
-            setLights(GREEN_PIN, bright)
-            setLights(BLUE_PIN, bright)
 
         if c == 'p' and state:
             state = False
             print("Pausing...")
-            time.sleep(0.1)
-            setLights(RED_PIN, 0)
-            setLights(GREEN_PIN, 0)
-            setLights(BLUE_PIN, 0)
+            bright = 0
+
+        if c in("+","-","p"):
+            brightChanged = True
+            time.sleep(0.01)
+            brightChanged = False
+            print("Current brightness: %d" % bright)
+            setLights(RED_PIN, bright)
+            setLights(GREEN_PIN, bright)
+            setLights(BLUE_PIN, bright)
 
         if c == 'r' and not state:
             state = True
@@ -92,81 +85,60 @@ def checkKey():
             abort = True
             break
 
-def fadeLed():
-    global r
-    global g
-    global b
-
+def fadeLed(r, g, b):
     while not abort:
         if state and not brightChanged:
             if r == 255 and b == 0 and g < 255:
                 g = updateColor(g, STEPS)
                 setLights(GREEN_PIN, g)
-
             elif g == 255 and b == 0 and r > 0:
                 r = updateColor(r, -STEPS)
                 setLights(RED_PIN, r)
-
             elif r == 0 and g == 255 and b < 255:
                 b = updateColor(b, STEPS)
                 setLights(BLUE_PIN, b)
-
             elif r == 0 and b == 255 and g > 0:
                 g = updateColor(g, -STEPS)
                 setLights(GREEN_PIN, g)
-
             elif g == 0 and b == 255 and r < 255:
                 r = updateColor(r, STEPS)
                 setLights(RED_PIN, r)
-
             elif r == 255 and g == 0 and b > 0:
                 b = updateColor(b, -STEPS)
                 setLights(BLUE_PIN, b)
 
 if __name__ == "__main__":
-    ###### CONFIGURE THIS ###########
-    # The Pins. Use Broadcom numbers.
-    RED_PIN = 17
-    GREEN_PIN = 22
-    BLUE_PIN = 24
-    # Number of color changes per step
-    # (more is faster, less is slower).
-    # You also can use 0.X floats.
-    STEPS = 0.01
-    BRIGHTNESS_STEPS = 25
-    ############## END ##############
-
-    # initial brightness and color
-    bright = 255
-    r = 255.0
-    g = 0
-    b = 0
-
     # global variables needed
     brightChanged = False
     abort = False
     state = True
+    # The Pins. Use Broadcom numbers.
+    RED_PIN = 17
+    GREEN_PIN = 22
+    BLUE_PIN = 24
+    # Number of color changes per step (more is faster, less is slower). You also can use 0.X floats.
+    STEPS = 0.01
+    # Change brightness 0-255 in steps (more is bigge change, up or down. less is smaller change)
+    BRIGHTNESS_STEPS = 25
+    # initial brightness
+    bright = 255
+    # initial color
+    r, g, b = 255.0, 0, 0
 
     pi = pigpio.pi()
-
     start_new_thread(checkKey, ())
-
-    print("+ / - = Increase / Decrease brightness")
-    print("p / r = Pause / Resume")
-    print("c = Abort Program")
+    print("+ / - = Increase / Decrease brightness\np / r = Pause / Resume\nc = Abort Program")
 
     setLights(RED_PIN, r)
     setLights(GREEN_PIN, g)
     setLights(BLUE_PIN, b)
 
-    fadeLed()
+    fadeLed(r, g, b)
 
     print("Aborting...")
-
-    setLights(RED_PIN, 0)
-    setLights(GREEN_PIN, 0)
-    setLights(BLUE_PIN, 0)
-
+    bright = 0
+    setLights(RED_PIN, bright)
+    setLights(GREEN_PIN, bright)
+    setLights(BLUE_PIN, bright)
     time.sleep(0.5)
-
     pi.stop()
