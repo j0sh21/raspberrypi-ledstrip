@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #
+<<<<<<< HEAD
 # -----------------------------------------------------
 # File        fading.py
 # Authors     David Ordnung
@@ -24,10 +25,34 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>
+=======
+ # -----------------------------------------------------
+ # File        fading.py
+ # Authors     David Ordnung
+ # License     GPLv3
+ # Web         http://dordnung.de/raspberrypi-ledstrip/
+ # -----------------------------------------------------
+ #
+ # Copyright (C) 2014-2017 David Ordnung
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program. If not, see <http://www.gnu.org/licenses/>
+>>>>>>> r-trigo/master
 #
 
 # This script needs running pigpio (http://abyz.co.uk/rpi/pigpio/)
 
+<<<<<<< HEAD
 import pigpio
 import time
 from _thread import start_new_thread
@@ -42,6 +67,40 @@ def updateColor(color, step):
         return 0
 
     return color
+=======
+
+###### CONFIGURE THIS ######
+
+# The Pins. Use Broadcom numbers.
+RED_PIN   = 17
+GREEN_PIN = 27
+BLUE_PIN  = 22
+
+# Number of color changes per step (more is faster, less is slower).
+# You also can use 0.X floats.
+STEPS = 0.02
+
+###### END ######
+
+import pigpio
+
+bright = 255
+r = 255.0
+g = 0.0
+b = 0.0
+
+pi = pigpio.pi()
+
+def updateColor(color, step):
+	color += step
+
+	if color > 255:
+		return 255
+	if color < 0:
+		return 0
+
+	return color
+>>>>>>> r-trigo/master
 
 
 def setLights(pin, brightness):
@@ -49,6 +108,7 @@ def setLights(pin, brightness):
     pi.set_PWM_dutycycle(pin, realBrightness)
 
 
+<<<<<<< HEAD
 def getCh():
     ch = input("Input: ")
     return ch
@@ -183,3 +243,33 @@ if __name__ == "__main__":
     time.sleep(0.5)
 
     pi.stop()
+=======
+setLights(RED_PIN, r)
+setLights(GREEN_PIN, g)
+setLights(BLUE_PIN, b)
+
+while True:
+	if r == 255 and b == 0 and g < 255:
+		g = updateColor(g, STEPS)
+		setLights(GREEN_PIN, g)
+
+	elif g == 255 and b == 0 and r > 0:
+		r = updateColor(r, -STEPS)
+		setLights(RED_PIN, r)
+
+	elif r == 0 and g == 255 and b < 255:
+		b = updateColor(b, STEPS)
+		setLights(BLUE_PIN, b)
+
+	elif r == 0 and b == 255 and g > 0:
+		g = updateColor(g, -STEPS)
+		setLights(GREEN_PIN, g)
+
+	elif g == 0 and b == 255 and r < 255:
+		r = updateColor(r, STEPS)
+		setLights(RED_PIN, r)
+
+	elif r == 255 and g == 0 and b > 0:
+		b = updateColor(b, -STEPS)
+		setLights(BLUE_PIN, b)
+>>>>>>> r-trigo/master
